@@ -1,0 +1,418 @@
+/* MacOS System 7 / Classic Mac Theme */
+
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+    /* Classic Mac Colors */
+    --mac-bg: #c0c0c0;
+    --mac-dark: #808080;
+    --mac-light: #ffffff;
+    --mac-black: #000000;
+    --mac-highlight: #000080;
+    --mac-window-bg: #ffffff;
+    --mac-pattern: repeating-linear-gradient(
+        45deg,
+        #c0c0c0,
+        #c0c0c0 1px,
+        #a0a0a0 1px,
+        #a0a0a0 2px
+    );
+
+    font-family: "Geneva", "Chicago", "Courier New", monospace;
+    line-height: 1.3;
+    font-weight: 400;
+    font-size: 12px;
+
+    color: #000000;
+    background: var(--mac-bg);
+
+    font-synthesis: none;
+    text-rendering: optimizeSpeed;
+    -webkit-font-smoothing: none;
+    -moz-osx-font-smoothing: grayscale;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--mac-bg);
+    background-image:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 1px,
+            rgba(0, 0, 0, 0.03) 1px,
+            rgba(0, 0, 0, 0.03) 2px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 1px,
+            rgba(0, 0, 0, 0.03) 1px,
+            rgba(0, 0, 0, 0.03) 2px
+        );
+}
+
+#root {
+    width: 100%;
+    margin: 0;
+}
+
+/* Classic Mac Window Style */
+.mac-window {
+    background: var(--mac-window-bg);
+    border: 2px solid var(--mac-black);
+    box-shadow:
+        inset 1px 1px 0 var(--mac-light),
+        inset -1px -1px 0 var(--mac-dark),
+        3px 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.mac-title-bar {
+    background: var(--mac-bg);
+    border-bottom: 2px solid var(--mac-black);
+    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-image: repeating-linear-gradient(
+        90deg,
+        #000000,
+        #000000 1px,
+        transparent 1px,
+        transparent 3px
+    );
+}
+
+/* Classic Mac Button */
+.mac-button {
+    background: var(--mac-bg);
+    border: 2px solid var(--mac-black);
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "Geneva", "Chicago", "Courier New", monospace;
+    color: var(--mac-black);
+    cursor: pointer;
+    box-shadow:
+        inset -1px -1px 0 var(--mac-dark),
+        inset 1px 1px 0 var(--mac-light),
+        2px 2px 0 rgba(0, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mac-button:hover {
+    background: #d0d0d0;
+}
+
+.mac-button:active {
+    background: var(--mac-black);
+    color: var(--mac-light);
+    box-shadow:
+        inset 2px 2px 0 rgba(0, 0, 0, 0.5),
+        1px 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.mac-button-primary {
+    background: var(--mac-black);
+    color: var(--mac-light);
+    border: 2px solid var(--mac-black);
+    box-shadow:
+        inset -1px -1px 0 #404040,
+        inset 1px 1px 0 #606060,
+        2px 2px 0 rgba(0, 0, 0, 0.3);
+}
+
+.mac-button-primary:hover {
+    background: #303030;
+}
+
+.mac-button-primary:active {
+    background: var(--mac-light);
+    color: var(--mac-black);
+}
+
+/* Classic Mac Input */
+.mac-input {
+    background: var(--mac-light);
+    border: 2px solid var(--mac-black);
+    padding: 4px 8px;
+    font-family: "Geneva", "Chicago", "Courier New", monospace;
+    font-size: 12px;
+    box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mac-input:focus {
+    outline: 2px solid var(--mac-black);
+    outline-offset: 2px;
+}
+
+/* Classic Mac Checkbox */
+.mac-checkbox {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--mac-black);
+    background: var(--mac-light);
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mac-checkbox:checked::before {
+    content: "✓";
+    position: absolute;
+    top: -4px;
+    left: 1px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--mac-black);
+}
+
+/* Classic Mac Table */
+.mac-table {
+    width: 100%;
+    border: 2px solid var(--mac-black);
+    background: var(--mac-light);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.mac-table th {
+    background: var(--mac-bg);
+    border-bottom: 2px solid var(--mac-black);
+    border-right: 1px solid var(--mac-dark);
+    padding: 8px;
+    text-align: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.mac-table td {
+    border-bottom: 1px solid var(--mac-dark);
+    border-right: 1px solid #e0e0e0;
+    padding: 8px;
+    font-size: 12px;
+}
+
+.mac-table tr:hover {
+    background: #e0e0e0;
+}
+
+.mac-table tr.selected {
+    background: var(--mac-highlight);
+    color: var(--mac-light);
+}
+
+/* Classic Mac Scrollbar */
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--mac-light);
+    border: 1px solid var(--mac-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--mac-bg);
+    border: 2px solid var(--mac-black);
+    box-shadow:
+        inset 1px 1px 0 var(--mac-light),
+        inset -1px -1px 0 var(--mac-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--mac-dark);
+}
+
+::-webkit-scrollbar-corner {
+    background: var(--mac-light);
+    border: 1px solid var(--mac-black);
+}
+
+/* Typography */
+h1 {
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: bold;
+    margin: 0 0 16px 0;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+h2 {
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: bold;
+    margin: 0 0 12px 0;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+h3 {
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+}
+
+p {
+    margin: 0 0 12px 0;
+}
+
+a {
+    color: #0000ff;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+a:hover {
+    color: #0000aa;
+}
+
+a:visited {
+    color: #800080;
+}
+
+/* Classic Mac Panel */
+.mac-panel {
+    background: var(--mac-bg);
+    border: 2px solid var(--mac-black);
+    padding: 12px;
+    box-shadow:
+        inset -1px -1px 0 var(--mac-dark),
+        inset 1px 1px 0 var(--mac-light),
+        3px 3px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mac-inset {
+    background: var(--mac-light);
+    border: 2px solid var(--mac-black);
+    padding: 8px;
+    box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Classic Mac Divider */
+.mac-divider {
+    height: 2px;
+    background: var(--mac-dark);
+    border-top: 1px solid var(--mac-black);
+    border-bottom: 1px solid var(--mac-light);
+    margin: 12px 0;
+}
+
+/* Loading animation - Classic Mac style */
+@keyframes mac-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.mac-loading {
+    border: 3px solid var(--mac-bg);
+    border-top: 3px solid var(--mac-black);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: mac-spin 1s linear infinite;
+}
+
+/* Badge/Tag style */
+.mac-badge {
+    display: inline-block;
+    background: var(--mac-bg);
+    border: 1px solid var(--mac-black);
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Status colors - Classic Mac limited palette */
+.mac-green {
+    background: #00ff00;
+    color: #000000;
+}
+
+.mac-yellow {
+    background: #ffff00;
+    color: #000000;
+}
+
+.mac-red {
+    background: #ff0000;
+    color: #ffffff;
+}
+
+.mac-blue {
+    background: #0000ff;
+    color: #ffffff;
+}
+
+/* Remove modern effects */
+* {
+    transition: none !important;
+    animation-duration: 0.1s !important;
+}
+
+button {
+    transition: none;
+}
+
+/* Utility classes */
+.mac-text-center {
+    text-align: center;
+}
+
+.mac-text-bold {
+    font-weight: bold;
+}
+
+.mac-mb-2 {
+    margin-bottom: 8px;
+}
+
+.mac-mb-4 {
+    margin-bottom: 16px;
+}
+
+.mac-p-2 {
+    padding: 8px;
+}
+
+.mac-p-4 {
+    padding: 16px;
+}
+
+/* Classic Mac disabled state */
+.mac-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Pixel perfect borders */
+.mac-border {
+    border: 2px solid var(--mac-black);
+}
+
+.mac-border-thin {
+    border: 1px solid var(--mac-black);
+}

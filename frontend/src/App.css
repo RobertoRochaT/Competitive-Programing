@@ -1,0 +1,476 @@
+/* MacOS System 7 / Classic Mac App Styles */
+
+:root {
+    --mac-bg: #c0c0c0;
+    --mac-light: #ffffff;
+    --mac-dark: #808080;
+    --mac-black: #000000;
+    --mac-highlight: #000080;
+    --mac-terminal-green: #00ff00;
+    --mac-terminal-bg: #000000;
+}
+
+#root {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    text-align: left;
+}
+
+/* Remove any modern app scaffolding */
+.app-container {
+    background: var(--mac-bg);
+    min-height: 100vh;
+}
+
+/* Classic Mac Menu Bar (optional) */
+.mac-menu-bar {
+    background: var(--mac-light);
+    border-bottom: 2px solid var(--mac-black);
+    padding: 4px 8px;
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.1);
+}
+
+.mac-menu-item {
+    cursor: pointer;
+    padding: 2px 8px;
+}
+
+.mac-menu-item:hover {
+    background: var(--mac-black);
+    color: var(--mac-light);
+}
+
+/* Classic Mac Desktop Pattern */
+.mac-desktop {
+    background: var(--mac-bg);
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.02) 2px,
+        rgba(0, 0, 0, 0.02) 4px
+    );
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Window draggable area */
+.mac-window-drag {
+    cursor: move;
+    user-select: none;
+}
+
+/* Classic Mac Close Box */
+.mac-close-box {
+    width: 12px;
+    height: 12px;
+    background: var(--mac-light);
+    border: 1px solid var(--mac-black);
+    cursor: pointer;
+    position: relative;
+}
+
+.mac-close-box:hover {
+    background: var(--mac-black);
+}
+
+.mac-close-box::before,
+.mac-close-box::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 1px;
+    background: var(--mac-black);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.mac-close-box::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.mac-close-box:hover::before,
+.mac-close-box:hover::after {
+    background: var(--mac-light);
+}
+
+/* Classic Mac Zoom Box */
+.mac-zoom-box {
+    width: 12px;
+    height: 12px;
+    background: var(--mac-light);
+    border: 1px solid var(--mac-black);
+    cursor: pointer;
+}
+
+.mac-zoom-box:hover {
+    background: var(--mac-dark);
+}
+
+/* Resize handle */
+.mac-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 16px;
+    height: 16px;
+    cursor: nwse-resize;
+    background: linear-gradient(
+        135deg,
+        transparent 0%,
+        transparent 40%,
+        var(--mac-black) 40%,
+        var(--mac-black) 45%,
+        transparent 45%,
+        transparent 55%,
+        var(--mac-black) 55%,
+        var(--mac-black) 60%,
+        transparent 60%
+    );
+}
+
+/* Classic Mac Alert/Dialog */
+.mac-alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    min-width: 300px;
+}
+
+.mac-alert-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 999;
+}
+
+.mac-alert-icon {
+    font-size: 48px;
+    text-align: center;
+    margin: 16px 0;
+}
+
+.mac-alert-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 0 16px 16px;
+}
+
+/* Classic Mac List View */
+.mac-list {
+    background: var(--mac-light);
+    border: 2px solid var(--mac-black);
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.mac-list-item {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--mac-dark);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mac-list-item:hover {
+    background: #e0e0e0;
+}
+
+.mac-list-item.selected {
+    background: var(--mac-highlight);
+    color: var(--mac-light);
+}
+
+/* Classic Mac Icon */
+.mac-icon {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--mac-black);
+    background: var(--mac-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+/* Classic Mac Progress Bar */
+.mac-progress {
+    background: var(--mac-light);
+    border: 2px solid var(--mac-black);
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mac-progress-bar {
+    background: var(--mac-black);
+    height: 100%;
+    transition: width 0.3s;
+    position: relative;
+}
+
+.mac-progress-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 4px,
+        rgba(255, 255, 255, 0.1) 4px,
+        rgba(255, 255, 255, 0.1) 8px
+    );
+}
+
+/* Classic Mac Radio Button */
+.mac-radio {
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--mac-black);
+    border-radius: 50%;
+    background: var(--mac-light);
+    appearance: none;
+    cursor: pointer;
+    position: relative;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.mac-radio:checked::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 6px;
+    height: 6px;
+    background: var(--mac-black);
+    border-radius: 50%;
+}
+
+/* Classic Mac Dropdown/Select */
+.mac-select {
+    background: var(--mac-light);
+    border: 2px solid var(--mac-black);
+    padding: 4px 24px 4px 8px;
+    font-family: "Geneva", "Chicago", "Courier New", monospace;
+    font-size: 12px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 6L11 1' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
+    box-shadow:
+        inset -1px -1px 0 #ffffff,
+        inset 1px 1px 0 #808080;
+    outline: none;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.mac-select:focus {
+    outline: 2px solid var(--mac-black);
+    outline-offset: 2px;
+}
+
+/* Grid layout for icons/items */
+.mac-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+.mac-grid-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    padding: 8px;
+}
+
+.mac-grid-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.mac-grid-item.selected {
+    background: var(--mac-highlight);
+    color: var(--mac-light);
+}
+
+/* Utility: Center content */
+.mac-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Terminal CRT Effects */
+.mac-terminal-crt {
+    position: relative;
+    background: var(--mac-terminal-bg);
+    color: var(--mac-terminal-green);
+}
+
+.mac-terminal-crt::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15) 0px,
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 10;
+}
+
+.mac-terminal-crt::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 255, 0, 0.02) 0%,
+        transparent 70%
+    );
+    pointer-events: none;
+    z-index: 9;
+}
+
+/* Classic Mac Window Title Bar Stripes */
+.mac-title-bar-striped {
+    background: linear-gradient(
+        to bottom,
+        #000000 0%,
+        #000000 50%,
+        #1a1a1a 50%,
+        #1a1a1a 100%
+    );
+    background-size: 100% 4px;
+}
+
+/* Monaco Editor Custom Scrollbar Enhancement */
+.monaco-scrollable-element > .scrollbar {
+    background-color: #dddddd !important;
+}
+
+.monaco-scrollable-element > .scrollbar > .slider {
+    background-color: #c0c0c0 !important;
+}
+
+/* Classic Mac Button Pressed State */
+.mac-button:active,
+.mac-button-primary:active {
+    box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.4);
+    transform: translate(1px, 1px);
+}
+
+/* Retro Font Rendering */
+.mac-pixelated {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* Classic Mac Bezel Effect */
+.mac-bezel {
+    border: 3px solid var(--mac-black);
+    box-shadow:
+        inset -2px -2px 0 #ffffff,
+        inset 2px 2px 0 #808080,
+        inset -3px -3px 0 #c0c0c0,
+        inset 3px 3px 0 #404040;
+}
+
+/* Retro Terminal Glow */
+@keyframes terminal-glow {
+    0%,
+    100% {
+        text-shadow:
+            0 0 2px currentColor,
+            0 0 4px currentColor;
+    }
+    50% {
+        text-shadow:
+            0 0 3px currentColor,
+            0 0 6px currentColor,
+            0 0 8px currentColor;
+    }
+}
+
+.mac-terminal-text {
+    animation: terminal-glow 3s ease-in-out infinite;
+}
+
+/* Classic Mac Disabled State */
+.mac-button:disabled,
+.mac-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    color: #808080;
+}
+
+/* System 7 Window Shadow */
+.mac-window-shadow {
+    box-shadow:
+        4px 4px 0 rgba(0, 0, 0, 0.3),
+        5px 5px 0 rgba(0, 0, 0, 0.2),
+        6px 6px 0 rgba(0, 0, 0, 0.1);
+    min-height: 100vh;
+}
+
+/* Utility: Flex row */
+.mac-flex-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Utility: Flex column */
+.mac-flex-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* No selection for UI elements */
+.mac-no-select {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+
+/* Classic Mac Cursor */
+body {
+    cursor: default;
+}
+
+button,
+a,
+.mac-button {
+    cursor: pointer;
+}

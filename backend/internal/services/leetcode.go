@@ -5,6 +5,7 @@ import (
     "encoding/json"
     "fmt"
     "io"
+    "log"
     "net/http"
     "strconv"
     "github.com/RobertoRochaT/CPP-backend/internal/models"
@@ -64,17 +65,21 @@ func (s *LeetCodeService) FetchProblems(limit, skip int) (*models.ProblemListRes
 
     resp, err := s.client.Do(req)
     if err != nil {
+        log.Printf("Error making request to LeetCode: %v", err)
         return nil, fmt.Errorf("error making request: %w", err)
     }
     defer resp.Body.Close()
 
     body, err := io.ReadAll(resp.Body)
     if err != nil {
+        log.Printf("Error reading response body: %v", err)
         return nil, fmt.Errorf("error reading response: %w", err)
     }
 
     var leetcodeResp models.LeetCodeResponse
     if err := json.Unmarshal(body, &leetcodeResp); err != nil {
+        log.Printf("Error unmarshaling JSON: %v", err)
+        log.Printf("Full response body: %s", string(body))
         return nil, fmt.Errorf("error unmarshaling response: %w", err)
     }
 
@@ -82,7 +87,6 @@ func (s *LeetCodeService) FetchProblems(limit, skip int) (*models.ProblemListRes
 
     for _, p := range leetcodeResp.Data.ProblemsetQuestionList.Questions {
         id, _ := strconv.Atoi(p.QuestionID)
-        acRate, _ := strconv.ParseFloat(p.AcRate, 64)
 
         tags := make([]string, len(p.TopicTags))
         for i, tag := range p.TopicTags {
@@ -94,7 +98,7 @@ func (s *LeetCodeService) FetchProblems(limit, skip int) (*models.ProblemListRes
             Title:          p.Title,
             Slug:           p.TitleSlug,
             Difficulty:     models.Difficulty(p.Difficulty),
-            AcceptanceRate: acRate,
+            AcceptanceRate: p.AcRate,
             Solved:         false,
             Tags:           tags,
             Description:    fmt.Sprintf("LeetCode Problem #%s", p.QuestionID),
@@ -105,4 +109,11 @@ func (s *LeetCodeService) FetchProblems(limit, skip int) (*models.ProblemListRes
         Problems: problems,
         Total:    leetcodeResp.Data.ProblemsetQuestionList.Total,
     }, nil
+}
+
+func min(a, b int) int {
+    if a < b {
+        return a
+    }
+    return b
 }

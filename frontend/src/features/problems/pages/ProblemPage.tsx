@@ -5,7 +5,8 @@ import type { Problem, Difficulty } from "../types/problem";
 
 const ProblemListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { problems, loading, error } = useProblems();
+  const { problems, loading, loadingMore, error, total, hasMore, loadMore } =
+    useProblems();
 
   const getDifficultyClass = (difficulty: Difficulty): string => {
     switch (difficulty) {
@@ -150,13 +151,26 @@ const ProblemListPage: React.FC = () => {
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
               >
                 <span style={{ fontSize: "11px", fontWeight: "bold" }}>
-                  TOTAL:
+                  LOADED:
                 </span>
                 <div
                   className="mac-inset"
                   style={{ padding: "4px 12px", minWidth: "40px" }}
                 >
                   <span style={{ fontWeight: "bold" }}>{problems.length}</span>
+                </div>
+              </div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <span style={{ fontSize: "11px", fontWeight: "bold" }}>
+                  TOTAL:
+                </span>
+                <div
+                  className="mac-inset"
+                  style={{ padding: "4px 12px", minWidth: "40px" }}
+                >
+                  <span style={{ fontWeight: "bold" }}>{total}</span>
                 </div>
               </div>
               <div
@@ -320,6 +334,43 @@ const ProblemListPage: React.FC = () => {
             </table>
           </div>
 
+          {/* Load More Button */}
+          {hasMore && !loading && (
+            <div style={{ marginTop: "16px", textAlign: "center" }}>
+              <button
+                className="mac-button"
+                onClick={loadMore}
+                disabled={loadingMore}
+                style={{
+                  padding: "8px 24px",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  minWidth: "150px",
+                }}
+              >
+                {loadingMore
+                  ? "Loading..."
+                  : `Load More (${total - problems.length} remaining)`}
+              </button>
+            </div>
+          )}
+
+          {/* All Loaded Message */}
+          {!hasMore && problems.length > 0 && (
+            <div
+              className="mac-panel"
+              style={{
+                marginTop: "16px",
+                textAlign: "center",
+                padding: "12px",
+              }}
+            >
+              <p style={{ fontSize: "11px", margin: 0, fontWeight: "bold" }}>
+                ✓ All {total} problems loaded
+              </p>
+            </div>
+          )}
+
           {/* Empty State */}
           {problems.length === 0 && !loading && (
             <div
@@ -343,8 +394,8 @@ const ProblemListPage: React.FC = () => {
             }}
           >
             <div style={{ fontSize: "11px" }}>
-              Showing {problems.length} problem
-              {problems.length !== 1 ? "s" : ""}
+              Showing {problems.length} of {total} problem
+              {total !== 1 ? "s" : ""}
             </div>
             <div style={{ fontSize: "11px" }}>
               © 1984-2024 Classic Computing

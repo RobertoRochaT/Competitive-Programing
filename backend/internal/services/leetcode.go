@@ -101,7 +101,7 @@ func (s *LeetCodeService) FetchProblems(limit, skip int) (*models.ProblemListRes
             AcceptanceRate: p.AcRate,
             Solved:         false,
             Tags:           tags,
-            Description:    fmt.Sprintf("LeetCode Problem #%s", p.QuestionID),
+            Description:    fmt.Sprintf("Acceptance Rate: %.1f%% | Topics: %s", p.AcRate, formatTags(tags)),
         })
     }
 
@@ -116,4 +116,25 @@ func min(a, b int) int {
         return a
     }
     return b
+}
+
+func formatTags(tags []string) string {
+    if len(tags) == 0 {
+        return "No tags"
+    }
+    if len(tags) <= 3 {
+        return joinStrings(tags, ", ")
+    }
+    return fmt.Sprintf("%s, +%d more", joinStrings(tags[:3], ", "), len(tags)-3)
+}
+
+func joinStrings(strs []string, sep string) string {
+    if len(strs) == 0 {
+        return ""
+    }
+    result := strs[0]
+    for i := 1; i < len(strs); i++ {
+        result += sep + strs[i]
+    }
+    return result
 }

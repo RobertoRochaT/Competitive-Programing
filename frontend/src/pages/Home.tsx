@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { fetchProblems } from "../features/problems/services/problemService";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [problemCount, setProblemCount] = useState<number>(0);
+
+  useEffect(() => {
+    const loadProblemCount = async () => {
+      try {
+        const response = await fetchProblems(1, 0);
+        setProblemCount(response.total);
+      } catch (error) {
+        console.error("Error loading problem count:", error);
+      }
+    };
+    loadProblemCount();
+  }, []);
 
   return (
     <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "20px" }}>
@@ -113,7 +127,9 @@ const Home: React.FC = () => {
               >
                 <div className="mac-inset" style={{ padding: "4px 8px" }}>
                   <span style={{ fontSize: "10px", fontWeight: "bold" }}>
-                    10 PROBLEMS
+                    {problemCount > 0
+                      ? `${problemCount} PROBLEMS`
+                      : "LOADING..."}
                   </span>
                 </div>
                 <span style={{ fontSize: "18px" }}>→</span>

@@ -6,8 +6,8 @@ import (
     "net/http"
     "strconv"
     "github.com/gorilla/mux"
-    "github.com/RobertoRochaT/cpp-backend/internal/models"
-    "github.com/RobertoRochaT/cpp-backend/internal/services"
+    "github.com/RobertoRochaT/CPP-backend/internal/models"
+    "github.com/RobertoRochaT/CPP-backend/internal/services"
 )
 
 type ProblemHandler struct {

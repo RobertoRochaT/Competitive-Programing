@@ -5,9 +5,9 @@ import (
     "net/http"
     "os"
     "github.com/gorilla/mux"
-    "github.com/RobertoRochaT/cpp-backend/internal/handlers"
-    "github.com/RobertoRochaT/cpp-backend/internal/middleware"
-    "github.com/RobertoRochaT/cpp-backend/internal/services"
+    "github.com/RobertoRochaT/CPP-backend/internal/handlers"
+    "github.com/RobertoRochaT/CPP-backend/internal/middleware"
+    "github.com/RobertoRochaT/CPP-backend/internal/services"
 )
 
 func main() {

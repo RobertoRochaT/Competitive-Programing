@@ -7,7 +7,7 @@ import (
     "io"
     "net/http"
     "strconv"
-    "github.com/RobertoRochaT/cpp-backend/internal/models"
+    "github.com/RobertoRochaT/CPP-backend/internal/models"
 )
 
 const leetcodeGraphQLURL = "https://leetcode.com/graphql"

@@ -416,3 +416,87 @@ button {
 .mac-border-thin {
     border: 1px solid var(--mac-black);
 }
+
+/* LeetCode Problem Description Styles */
+.mac-inset p {
+    margin: 0 0 12px 0;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.mac-inset p:last-child {
+    margin-bottom: 0;
+}
+
+.mac-inset code {
+    font-family: "Courier New", monospace;
+    background: #e0e0e0;
+    border: 1px solid var(--mac-black);
+    padding: 2px 4px;
+    font-size: 11px;
+}
+
+.mac-inset pre {
+    font-family: "Courier New", monospace;
+    background: #ffffff;
+    border: 2px solid var(--mac-black);
+    padding: 8px;
+    margin: 8px 0;
+    overflow-x: auto;
+    font-size: 11px;
+    line-height: 1.4;
+    box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.mac-inset strong {
+    font-weight: bold;
+}
+
+.mac-inset em {
+    font-style: italic;
+}
+
+.mac-inset ul,
+.mac-inset ol {
+    margin: 8px 0;
+    padding-left: 24px;
+}
+
+.mac-inset li {
+    margin: 4px 0;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.mac-inset sup {
+    font-size: 9px;
+    vertical-align: super;
+}
+
+.mac-inset .example {
+    margin: 12px 0;
+}
+
+.mac-inset h1,
+.mac-inset h2,
+.mac-inset h3,
+.mac-inset h4 {
+    font-weight: bold;
+    margin: 12px 0 8px 0;
+}
+
+.mac-inset h1 {
+    font-size: 14px;
+}
+
+.mac-inset h2 {
+    font-size: 13px;
+}
+
+.mac-inset h3 {
+    font-size: 12px;
+}
+
+.mac-inset h4 {
+    font-size: 11px;
+}

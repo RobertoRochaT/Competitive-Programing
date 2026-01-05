@@ -6,7 +6,6 @@ import (
     "net/http"
     "strconv"
     "github.com/gorilla/mux"
-    "github.com/RobertoRochaT/CPP-backend/internal/models"
     "github.com/RobertoRochaT/CPP-backend/internal/services"
 )
 
@@ -58,30 +57,16 @@ func (h *ProblemHandler) GetProblemBySlug(w http.ResponseWriter, r *http.Request
     vars := mux.Vars(r)
     slug := vars["slug"]
 
-    // Primero obtenemos todos los problemas (podrías optimizar esto con una caché)
-    problems, err := h.leetcodeService.FetchProblems(100, 0)
+    // Obtener el problema completo con descripción
+    problem, err := h.leetcodeService.FetchProblemBySlug(slug)
     if err != nil {
-        log.Printf("Error fetching problems: %v", err)
-        http.Error(w, "Error fetching problem", http.StatusInternalServerError)
-        return
-    }
-
-    // Buscar el problema por slug
-    var foundProblem *models.Problem
-    for _, p := range problems.Problems {
-        if p.Slug == slug {
-            foundProblem = &p
-            break
-        }
-    }
-
-    if foundProblem == nil {
+        log.Printf("Error fetching problem by slug: %v", err)
         http.Error(w, "Problem not found", http.StatusNotFound)
         return
     }
 
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(foundProblem)
+    json.NewEncoder(w).Encode(problem)
 }
 
 // GET /api/health

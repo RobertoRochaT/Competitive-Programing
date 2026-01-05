@@ -118,6 +118,98 @@ func min(a, b int) int {
     return b
 }
 
+func (s *LeetCodeService) FetchProblemBySlug(slug string) (*models.Problem, error) {
+    query := fmt.Sprintf(`
+    query questionContent {
+      question(titleSlug: "%s") {
+        questionId
+        title
+        titleSlug
+        difficulty
+        content
+        acRate
+        topicTags {
+          name
+        }
+      }
+    }
+    `, slug)
+
+    requestBody := map[string]string{
+        "query": query,
+    }
+
+    jsonData, err := json.Marshal(requestBody)
+    if err != nil {
+        return nil, fmt.Errorf("error marshaling request: %w", err)
+    }
+
+    req, err := http.NewRequest("POST", leetcodeGraphQLURL, bytes.NewBuffer(jsonData))
+    if err != nil {
+        return nil, fmt.Errorf("error creating request: %w", err)
+    }
+
+    req.Header.Set("Content-Type", "application/json")
+
+    resp, err := s.client.Do(req)
+    if err != nil {
+        log.Printf("Error making request to LeetCode: %v", err)
+        return nil, fmt.Errorf("error making request: %w", err)
+    }
+    defer resp.Body.Close()
+
+    body, err := io.ReadAll(resp.Body)
+    if err != nil {
+        log.Printf("Error reading response body: %v", err)
+        return nil, fmt.Errorf("error reading response: %w", err)
+    }
+
+    var leetcodeResp struct {
+        Data struct {
+            Question struct {
+                QuestionID string `json:"questionId"`
+                Title      string `json:"title"`
+                TitleSlug  string `json:"titleSlug"`
+                Difficulty string `json:"difficulty"`
+                Content    string `json:"content"`
+                AcRate     float64 `json:"acRate"`
+                TopicTags  []struct {
+                    Name string `json:"name"`
+                } `json:"topicTags"`
+            } `json:"question"`
+        } `json:"data"`
+    }
+
+    if err := json.Unmarshal(body, &leetcodeResp); err != nil {
+        log.Printf("Error unmarshaling JSON: %v", err)
+        log.Printf("Full response body: %s", string(body))
+        return nil, fmt.Errorf("error unmarshaling response: %w", err)
+    }
+
+    if leetcodeResp.Data.Question.QuestionID == "" {
+        return nil, fmt.Errorf("problem not found")
+    }
+
+    p := leetcodeResp.Data.Question
+    id, _ := strconv.Atoi(p.QuestionID)
+
+    tags := make([]string, len(p.TopicTags))
+    for i, tag := range p.TopicTags {
+        tags[i] = tag.Name
+    }
+
+    return &models.Problem{
+        ID:             id,
+        Title:          p.Title,
+        Slug:           p.TitleSlug,
+        Difficulty:     models.Difficulty(p.Difficulty),
+        AcceptanceRate: p.AcRate,
+        Solved:         false,
+        Tags:           tags,
+        Description:    p.Content,
+    }, nil
+}
+
 func formatTags(tags []string) string {
     if len(tags) == 0 {
         return "No tags"

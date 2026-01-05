@@ -27,43 +27,6 @@ export const fetchProblems = async (
   }
 };
 
-// Obtener todos los problemas con paginación automática (carga incremental)
-export const fetchAllProblems = async (
-  onProgress?: (loaded: number, total: number) => void,
-): Promise<Problem[]> => {
-  const allProblems: Problem[] = [];
-  let skip = 0;
-  let total = 0;
-
-  try {
-    // Primera request para obtener el total
-    const firstPage = await fetchProblems(PROBLEMS_PER_PAGE, skip);
-    total = firstPage.total;
-    allProblems.push(...firstPage.problems);
-    skip += PROBLEMS_PER_PAGE;
-
-    if (onProgress) {
-      onProgress(allProblems.length, total);
-    }
-
-    // Cargar el resto de páginas
-    while (skip < total) {
-      const page = await fetchProblems(PROBLEMS_PER_PAGE, skip);
-      allProblems.push(...page.problems);
-      skip += PROBLEMS_PER_PAGE;
-
-      if (onProgress) {
-        onProgress(allProblems.length, total);
-      }
-    }
-
-    return allProblems;
-  } catch (error) {
-    console.error("Error fetching all problems:", error);
-    throw error;
-  }
-};
-
 // Obtener un problema específico por slug
 export const fetchProblemBySlug = async (
   slug: string,

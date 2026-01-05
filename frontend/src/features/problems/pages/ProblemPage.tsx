@@ -5,8 +5,17 @@ import type { Problem, Difficulty } from "../types/problem";
 
 const ProblemListPage: React.FC = () => {
   const navigate = useNavigate();
-  const { problems, loading, loadingMore, error, total, hasMore, loadMore } =
-    useProblems();
+  const {
+    problems,
+    loading,
+    error,
+    total,
+    currentPage,
+    totalPages,
+    nextPage,
+    previousPage,
+    goToPage,
+  } = useProblems();
 
   const getDifficultyClass = (difficulty: Difficulty): string => {
     switch (difficulty) {
@@ -334,40 +343,141 @@ const ProblemListPage: React.FC = () => {
             </table>
           </div>
 
-          {/* Load More Button */}
-          {hasMore && !loading && (
-            <div style={{ marginTop: "16px", textAlign: "center" }}>
-              <button
-                className="mac-button"
-                onClick={loadMore}
-                disabled={loadingMore}
-                style={{
-                  padding: "8px 24px",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  minWidth: "150px",
-                }}
-              >
-                {loadingMore
-                  ? "Loading..."
-                  : `Load More (${total - problems.length} remaining)`}
-              </button>
-            </div>
-          )}
-
-          {/* All Loaded Message */}
-          {!hasMore && problems.length > 0 && (
+          {/* Pagination Controls */}
+          {!loading && totalPages > 1 && (
             <div
               className="mac-panel"
               style={{
                 marginTop: "16px",
-                textAlign: "center",
                 padding: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
               }}
             >
-              <p style={{ fontSize: "11px", margin: 0, fontWeight: "bold" }}>
-                ✓ All {total} problems loaded
-              </p>
+              {/* Previous Button */}
+              <button
+                className="mac-button"
+                onClick={previousPage}
+                disabled={currentPage === 1}
+                style={{
+                  padding: "4px 12px",
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                  minWidth: "60px",
+                }}
+              >
+                ◀ Prev
+              </button>
+
+              {/* Page Numbers */}
+              <div
+                style={{ display: "flex", gap: "4px", alignItems: "center" }}
+              >
+                {/* First Page */}
+                {currentPage > 3 && (
+                  <>
+                    <button
+                      className="mac-button"
+                      onClick={() => goToPage(1)}
+                      style={{
+                        padding: "4px 8px",
+                        fontSize: "11px",
+                        minWidth: "32px",
+                      }}
+                    >
+                      1
+                    </button>
+                    {currentPage > 4 && (
+                      <span style={{ fontSize: "11px", padding: "0 4px" }}>
+                        ...
+                      </span>
+                    )}
+                  </>
+                )}
+
+                {/* Page range around current page */}
+                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                  .filter(
+                    (page) =>
+                      page === currentPage ||
+                      page === currentPage - 1 ||
+                      page === currentPage + 1 ||
+                      (page === currentPage - 2 && currentPage <= 3) ||
+                      (page === currentPage + 2 &&
+                        currentPage >= totalPages - 2),
+                  )
+                  .map((page) => (
+                    <button
+                      key={page}
+                      className="mac-button"
+                      onClick={() => goToPage(page)}
+                      disabled={page === currentPage}
+                      style={{
+                        padding: "4px 8px",
+                        fontSize: "11px",
+                        fontWeight: page === currentPage ? "bold" : "normal",
+                        minWidth: "32px",
+                        background:
+                          page === currentPage ? "#000" : "transparent",
+                        color: page === currentPage ? "#fff" : "#000",
+                      }}
+                    >
+                      {page}
+                    </button>
+                  ))}
+
+                {/* Last Page */}
+                {currentPage < totalPages - 2 && (
+                  <>
+                    {currentPage < totalPages - 3 && (
+                      <span style={{ fontSize: "11px", padding: "0 4px" }}>
+                        ...
+                      </span>
+                    )}
+                    <button
+                      className="mac-button"
+                      onClick={() => goToPage(totalPages)}
+                      style={{
+                        padding: "4px 8px",
+                        fontSize: "11px",
+                        minWidth: "32px",
+                      }}
+                    >
+                      {totalPages}
+                    </button>
+                  </>
+                )}
+              </div>
+
+              {/* Next Button */}
+              <button
+                className="mac-button"
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: "4px 12px",
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                  minWidth: "60px",
+                }}
+              >
+                Next ▶
+              </button>
+            </div>
+          )}
+
+          {/* Page Info */}
+          {!loading && totalPages > 0 && (
+            <div
+              style={{
+                marginTop: "8px",
+                textAlign: "center",
+                fontSize: "11px",
+              }}
+            >
+              Page {currentPage} of {totalPages}
             </div>
           )}
 
@@ -394,7 +504,8 @@ const ProblemListPage: React.FC = () => {
             }}
           >
             <div style={{ fontSize: "11px" }}>
-              Showing {problems.length} of {total} problem
+              Showing {(currentPage - 1) * 100 + 1}-
+              {Math.min(currentPage * 100, total)} of {total} problem
               {total !== 1 ? "s" : ""}
             </div>
             <div style={{ fontSize: "11px" }}>

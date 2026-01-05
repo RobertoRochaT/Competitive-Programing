@@ -141,7 +141,27 @@ const ProblemListPage: React.FC = () => {
         <div style={{ padding: "16px" }}>
           {/* Header */}
           <div style={{ marginBottom: "16px" }}>
-            <h1 style={{ marginBottom: "8px" }}>Problem Set</h1>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                marginBottom: "8px",
+              }}
+            >
+              <button
+                className="mac-button"
+                onClick={() => navigate("/")}
+                style={{
+                  padding: "4px 12px",
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                }}
+              >
+                ◄ Home
+              </button>
+              <h1 style={{ margin: 0 }}>Problem Set</h1>
+            </div>
             <p style={{ fontSize: "12px", margin: "0 0 12px 0" }}>
               Choose a problem to test your programming skills
             </p>

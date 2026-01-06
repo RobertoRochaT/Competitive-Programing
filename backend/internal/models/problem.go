@@ -8,6 +8,18 @@ const (
 	Hard   Difficulty = "Hard"
 )
 
+type TestCase struct {
+	Input          string `json:"input"`
+	ExpectedOutput string `json:"expectedOutput"`
+	Description    string `json:"description,omitempty"`
+}
+
+type Example struct {
+	Input       string `json:"input"`
+	Output      string `json:"output"`
+	Explanation string `json:"explanation,omitempty"`
+}
+
 type Problem struct {
 	ID             int        `json:"id"`
 	Title          string     `json:"title"`
@@ -17,6 +29,8 @@ type Problem struct {
 	Solved         bool       `json:"solved"`
 	Tags           []string   `json:"tags,omitempty"`
 	Description    string     `json:"description,omitempty"`
+	TestCases      []TestCase `json:"testCases,omitempty"`
+	Examples       []Example  `json:"examples,omitempty"`
 }
 
 type ProblemListResponse struct {

@@ -1,286 +1,383 @@
-# 🏆 Competitive Programming Platform
+# 💻 Code Practice Platform
 
-Plataforma full-stack para practicar problemas de programación competitiva con datos en tiempo real de LeetCode.
-
-## 📋 Descripción
-
-Este proyecto combina un frontend moderno en React con un backend robusto en Go para proporcionar una experiencia completa de práctica de algoritmos y estructuras de datos.
-
-## 🛠️ Stack Tecnológico
-
-### Frontend
-- **React 18** - Biblioteca UI
-- **TypeScript** - Tipado estático
-- **Vite** - Build tool y dev server
-- **React Router** - Enrutamiento
-- **CSS Modules** - Estilos
-
-### Backend
-- **Go 1.25+** - Lenguaje del servidor
-- **Gorilla Mux** - Router HTTP
-- **LeetCode GraphQL API** - Fuente de datos
-
-## 📁 Estructura del Proyecto
-
-```
-CPP/
-├── frontend/                 # Aplicación React
-│   ├── src/
-│   │   ├── features/        # Características por módulo
-│   │   │   ├── problems/    # Lista de problemas
-│   │   │   ├── editor/      # Editor de código
-│   │   │   └── match/       # Sistema de matches
-│   │   ├── pages/           # Páginas principales
-│   │   └── routes/          # Configuración de rutas
-│   └── package.json
-│
-└── backend/                  # API en Go
-    ├── cmd/
-    │   └── server/          # Punto de entrada
-    ├── internal/
-    │   ├── handlers/        # Controladores HTTP
-    │   ├── services/        # Lógica de negocio
-    │   ├── models/          # Modelos de datos
-    │   └── middleware/      # Middleware (CORS, etc)
-    └── go.mod
-```
-
-## 🚀 Instalación y Configuración
-
-### Prerrequisitos
-
-- **Node.js** 18+ y npm
-- **Go** 1.21+
-- **Git**
-
-### 1️⃣ Clonar el Repositorio
-
-```bash
-git clone https://github.com/RobertoRochaT/Competitive-Programing.git
-cd Competitive-Programing
-```
-
-### 2️⃣ Configurar el Backend
-
-```bash
-cd backend
-
-# Descargar dependencias
-go mod download
-
-# Compilar el servidor
-go build -o bin/server cmd/server/main.go
-
-# Ejecutar el servidor
-./bin/server
-```
-
-El backend estará disponible en: `http://localhost:8080`
-
-**Endpoints disponibles:**
-- `GET /api/health` - Health check
-- `GET /api/problems` - Obtener lista de problemas
-- `GET /api/problems/{slug}` - Obtener problema específico
-
-### 3️⃣ Configurar el Frontend
-
-```bash
-cd frontend
-
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno (opcional)
-# El archivo .env ya existe con la configuración por defecto
-
-# Iniciar servidor de desarrollo
-npm run dev
-```
-
-El frontend estará disponible en: `http://localhost:5173`
-
-## 🎮 Uso
-
-### Desarrollo
-
-**Opción 1: Dos terminales separadas**
-
-Terminal 1 - Backend:
-```bash
-cd backend
-go run cmd/server/main.go
-```
-
-Terminal 2 - Frontend:
-```bash
-cd frontend
-npm run dev
-```
-
-**Opción 2: Usando scripts (próximamente)**
-```bash
-# En la raíz del proyecto
-npm run dev:all
-```
-
-### Producción
-
-**Backend:**
-```bash
-cd backend
-go build -o bin/server cmd/server/main.go
-PORT=8080 ./bin/server
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm run build
-npm run preview
-```
-
-## 🔧 Configuración Avanzada
-
-### Variables de Entorno
-
-**Frontend (`.env`):**
-```env
-VITE_API_URL=http://localhost:8080/api
-```
-
-**Backend:**
-```bash
-PORT=8080  # Puerto del servidor (default: 8080)
-```
-
-### CORS
-
-El backend está configurado con CORS permitido para todos los orígenes (`*`) por defecto. Para producción, modifica `backend/internal/middleware/cors.go`:
-
-```go
-w.Header().Set("Access-Control-Allow-Origin", "https://tu-dominio.com")
-```
-
-## 📝 Comandos Útiles
-
-### Backend (Go)
-
-```bash
-# Ejecutar el servidor
-go run cmd/server/main.go
-
-# Compilar
-go build -o bin/server cmd/server/main.go
-
-# Ejecutar tests
-go test ./...
-
-# Formatear código
-go fmt ./...
-
-# Verificar código
-go vet ./...
-
-# Actualizar dependencias
-go mod tidy
-```
-
-### Frontend (React)
-
-```bash
-# Desarrollo
-npm run dev
-
-# Build para producción
-npm run build
-
-# Preview del build
-npm run preview
-
-# Lint
-npm run lint
-```
-
-## 🐛 Solución de Problemas
-
-### El backend no inicia
-
-1. Verifica que Go esté instalado: `go version`
-2. Verifica que las dependencias estén instaladas: `go mod download`
-3. Verifica que el puerto 8080 esté libre: `lsof -i :8080`
-
-### El frontend no conecta con el backend
-
-1. Verifica que el backend esté corriendo en `http://localhost:8080`
-2. Revisa la consola del navegador para errores de CORS
-3. Verifica que `.env` tenga la URL correcta del API
-
-### Errores de compilación en Go
-
-```bash
-cd backend
-go mod tidy
-go clean -modcache
-go mod download
-```
-
-## 🎯 Características Implementadas
-
-- ✅ Obtener problemas de LeetCode en tiempo real
-- ✅ API REST en Go con Gorilla Mux
-- ✅ Frontend React con TypeScript
-- ✅ Configuración de CORS
-- ✅ Manejo de errores
-- ✅ Arquitectura modular
-
-## 🚧 Próximas Características
-
-- [ ] Autenticación de usuarios (JWT)
-- [ ] Sistema de progreso y estadísticas
-- [ ] Editor de código integrado con ejecución
-- [ ] Sistema de matches 1v1
-- [ ] Base de datos (PostgreSQL)
-- [ ] Caché con Redis
-- [ ] Tests unitarios y de integración
-- [ ] CI/CD con GitHub Actions
-- [ ] Dockerización
-
-## 📚 Recursos de Aprendizaje
-
-### Go
-- [Tour of Go](https://go.dev/tour/)
-- [Effective Go](https://go.dev/doc/effective_go)
-- [Go by Example](https://gobyexample.com/)
-
-### React + TypeScript
-- [React Docs](https://react.dev/)
-- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Vite Guide](https://vitejs.dev/guide/)
-
-## 🤝 Contribución
-
-Las contribuciones son bienvenidas. Por favor:
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
-
-## 📄 Licencia
-
-Este proyecto es de código abierto y está disponible bajo la [MIT License](LICENSE).
-
-## 👤 Autor
-
-**Roberto Rocha**
-- GitHub: [@RobertoRochaT](https://github.com/RobertoRochaT)
-
-## 🙏 Agradecimientos
-
-- [LeetCode](https://leetcode.com/) por proporcionar la API de problemas
-- Comunidad de Go y React por las excelentes herramientas y documentación
+A LeetCode-style coding practice platform with real-time code execution powered by **ROJUDGER**.
 
 ---
 
-⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub!
+## 🎯 Features
+
+- ✅ **Real Code Execution** - Execute code in Python, JavaScript, C++, Java, and Go
+- ✅ **Test Case Evaluation** - Automatically validate solutions against test cases
+- ✅ **Multiple Languages** - Support for 5+ programming languages
+- ✅ **Retro UI** - Classic Mac OS System 7 inspired interface
+- ✅ **Practice Problems** - Browse and solve coding challenges
+- ✅ **Competitive Matches** - Challenge other programmers (coming soon)
+
+---
+
+## 🏗️ Architecture
+
+```
+┌─────────────┐
+│   Frontend  │ ← React + TypeScript + Vite
+│  (Port 5173)│
+└──────┬──────┘
+       │ API Calls
+       ↓
+┌─────────────┐
+│  Backend    │ ← Go + Gorilla Mux
+│  (Port 8080)│
+└──────┬──────┘
+       │ Problems API
+       │
+       │ Code Execution →
+       ↓
+┌─────────────┐
+│  ROJUDGER   │ ← Code Execution Engine
+│  (Port 8080)│ ← Judge0-compatible API
+└─────────────┘
+```
+
+---
+
+## 📋 Prerequisites
+
+- **Node.js** 18+ (for frontend)
+- **Go** 1.21+ (for backend)
+- **Docker** (for ROJUDGER code execution)
+- **Redis** (for ROJUDGER queue)
+- **PostgreSQL** or **SQLite** (for ROJUDGER database)
+
+---
+
+## 🚀 Quick Start
+
+### 1. Setup ROJUDGER (Code Execution Engine)
+
+```bash
+# Navigate to ROJUDGER
+cd ../ROJUDGER
+
+# Start Redis (required for queue)
+docker run -d -p 6379:6379 redis:7-alpine
+
+# Build ROJUDGER
+go build -o api ./cmd/api
+go build -o worker ./cmd/worker
+
+# Start API server (in terminal 1)
+export USE_QUEUE=true
+./api
+
+# Start worker (in terminal 2)
+./worker
+```
+
+ROJUDGER API will be available at `http://localhost:8080`
+
+### 2. Setup Backend (Problems API)
+
+```bash
+# Navigate to backend
+cd CPP/backend
+
+# Install dependencies
+go mod download
+
+# Run backend server
+go run cmd/server/main.go
+```
+
+Backend API will be available at `http://localhost:8080/api`
+
+### 3. Setup Frontend
+
+```bash
+# Navigate to frontend
+cd CPP/frontend
+
+# Install dependencies
+npm install
+
+# Create .env file
+cp .env.example .env
+
+# Start development server
+npm run dev
+```
+
+Frontend will be available at `http://localhost:5173`
+
+---
+
+## 🔧 Configuration
+
+### Frontend Environment Variables
+
+Create `CPP/frontend/.env`:
+
+```bash
+# Backend API (for problems)
+VITE_API_URL=http://localhost:8080/api
+
+# ROJUDGER API (for code execution)
+VITE_ROJUDGER_API_URL=http://localhost:8080/api/v1
+```
+
+### Backend Configuration
+
+The backend serves sample problems with test cases. No additional configuration needed for development.
+
+### ROJUDGER Configuration
+
+See `../ROJUDGER/README.md` for detailed configuration options.
+
+**Important:** Make sure ROJUDGER is running before executing code!
+
+---
+
+## 📚 How It Works
+
+### Code Execution Flow
+
+```
+1. User writes code in the editor
+2. User clicks "Run Code" or "Submit"
+3. Frontend calls ROJUDGER API with:
+   - Source code
+   - Language ID
+   - Test case input
+4. ROJUDGER queues the submission
+5. Worker picks up the job
+6. Worker executes code in Docker container
+7. Worker returns results (stdout, stderr, exit code, time, memory)
+8. Frontend displays results to user
+```
+
+### Test Case Evaluation
+
+For each test case:
+- Input is passed via stdin
+- Expected output is compared with actual output
+- Results are shown: ✓ PASSED or ✗ FAILED
+
+---
+
+## 💡 Usage Examples
+
+### Running a Problem
+
+1. Go to `http://localhost:5173`
+2. Click "Practice Problems"
+3. Select a problem (e.g., "Two Sum")
+4. Write your solution in the editor
+5. Click "Run Code" to test with sample inputs
+6. Click "Submit" to validate against all test cases
+
+### Supported Languages
+
+| Language   | ROJUDGER ID | Status |
+|------------|-------------|--------|
+| Python 3   | 71          | ✅     |
+| JavaScript | 63          | ✅     |
+| C++        | 54          | ✅     |
+| Java       | 62          | ✅     |
+| Go         | 60          | ✅     |
+
+---
+
+## 🧪 Testing
+
+### Test ROJUDGER Integration
+
+```bash
+# Quick test
+curl -X POST http://localhost:8080/api/v1/submissions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "language_id": 71,
+    "source_code": "print(\"Hello ROJUDGER!\")"
+  }'
+
+# Get result
+curl http://localhost:8080/api/v1/submissions/{submission_id}
+```
+
+### Test Frontend
+
+```bash
+cd CPP/frontend
+npm run build
+npm run preview
+```
+
+---
+
+## 📁 Project Structure
+
+```
+CPP/
+├── frontend/                 # React frontend
+│   ├── src/
+│   │   ├── features/
+│   │   │   ├── editor/      # Code editor & execution
+│   │   │   │   ├── components/
+│   │   │   │   ├── pages/
+│   │   │   │   └── services/
+│   │   │   │       └── rojudgerService.ts  # ROJUDGER API client
+│   │   │   ├── problems/    # Problem listing
+│   │   │   └── match/       # Competitive matches
+│   │   ├── pages/
+│   │   └── routes/
+│   ├── package.json
+│   └── vite.config.ts
+│
+└── backend/                  # Go backend
+    ├── cmd/
+    │   └── server/
+    ├── internal/
+    │   ├── handlers/         # HTTP handlers
+    │   ├── models/           # Data models
+    │   └── services/         # Business logic
+    │       └── sample_problems.go  # Sample problems with test cases
+    └── go.mod
+```
+
+---
+
+## 🔍 API Endpoints
+
+### Backend (Problems)
+
+```
+GET  /api/problems          - List all problems
+GET  /api/problems/:slug    - Get problem details with test cases
+GET  /api/health            - Health check
+```
+
+### ROJUDGER (Code Execution)
+
+```
+POST /api/v1/submissions    - Submit code for execution
+GET  /api/v1/submissions/:id - Get submission result
+GET  /api/v1/languages      - List supported languages
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### "Failed to submit code" Error
+
+**Problem:** ROJUDGER API is not running
+
+**Solution:**
+```bash
+cd ../ROJUDGER
+# Make sure both API and worker are running
+./api &
+./worker &
+```
+
+### "Submission timeout" Error
+
+**Problem:** Worker is not processing jobs
+
+**Solution:**
+```bash
+# Check Redis is running
+docker ps | grep redis
+
+# Check worker logs
+cd ../ROJUDGER
+./worker
+```
+
+### Code executes but shows wrong results
+
+**Problem:** Test case format mismatch
+
+**Solution:** Check that your code:
+- Reads input from stdin
+- Prints output to stdout
+- Output format matches expected format exactly
+
+### Frontend shows "Loading problems..."
+
+**Problem:** Backend is not running
+
+**Solution:**
+```bash
+cd CPP/backend
+go run cmd/server/main.go
+```
+
+---
+
+## 🎨 Sample Problems Included
+
+1. **Two Sum** (Easy) - Array, Hash Table
+2. **Add Two Numbers** (Medium) - Linked List, Math
+3. **Longest Substring Without Repeating Characters** (Medium) - Hash Table, Sliding Window
+4. **Reverse Integer** (Medium) - Math
+5. **Palindrome Number** (Easy) - Math
+
+Each problem includes:
+- Full description
+- Examples with explanations
+- 3-5 test cases
+- Multiple language support
+
+---
+
+## 🚧 Roadmap
+
+- [ ] User authentication & profiles
+- [ ] Save submission history
+- [ ] Leaderboards & rankings
+- [ ] Competitive match system
+- [ ] More practice problems
+- [ ] Discussion forum
+- [ ] Solution explanations
+- [ ] Video walkthroughs
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 🙏 Acknowledgments
+
+- **ROJUDGER** - Code execution engine (based on Judge0 architecture)
+- **LeetCode** - Inspiration for problem format
+- **System 7** - Classic Mac OS UI design
+
+---
+
+## 📞 Support
+
+If you encounter issues:
+
+1. Check this README
+2. Check ROJUDGER documentation: `../ROJUDGER/README.md`
+3. Check ROJUDGER webhook guide: `../ROJUDGER/docs/WEBHOOKS.md`
+4. Open an issue on GitHub
+
+---
+
+**Built with ❤️ using React, Go, and ROJUDGER**
+
+*Happy Coding! 🚀*

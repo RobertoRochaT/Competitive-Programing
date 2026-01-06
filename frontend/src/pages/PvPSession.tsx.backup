@@ -1,0 +1,683 @@
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import pvpService, {
+  type SessionWithDetails,
+  type PvPProblem,
+  type LeaderboardEntry,
+} from "../services/pvpService";
+import Editor from "@monaco-editor/react";
+
+const PvPSession = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [session, setSession] = useState<SessionWithDetails | null>(null);
+  const [problems, setProblems] = useState<PvPProblem[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [selectedProblem, setSelectedProblem] = useState<PvPProblem | null>(
+    null,
+  );
+  const [code, setCode] = useState<string>("// Write your solution here\n");
+  const [language, setLanguage] = useState<string>("cpp");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+
+  // Fetch session data
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchSession = async () => {
+      try {
+        const sessionData = await pvpService.getSessionByID(parseInt(id));
+        setSession(sessionData);
+
+        if (sessionData.status !== "active") {
+          navigate(`/pvp/lobby/${sessionData.code}`);
+          return;
+        }
+      } catch (err: any) {
+        setError(err.message || "Failed to load session");
+      }
+    };
+
+    fetchSession();
+  }, [id, navigate]);
+
+  // Fetch problems
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchProblems = async () => {
+      try {
+        const problemsData = await pvpService.getSessionProblems(parseInt(id));
+        setProblems(problemsData);
+        if (problemsData.length > 0 && !selectedProblem) {
+          setSelectedProblem(problemsData[0]);
+        }
+      } catch (err: any) {
+        console.error("Failed to load problems:", err);
+      }
+    };
+
+    fetchProblems();
+  }, [id]);
+
+  // Fetch leaderboard with polling
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchLeaderboard = async () => {
+      try {
+        const leaderboardData = await pvpService.getLeaderboard(parseInt(id));
+        setLeaderboard(leaderboardData);
+      } catch (err: any) {
+        console.error("Failed to load leaderboard:", err);
+      }
+    };
+
+    fetchLeaderboard();
+    const interval = setInterval(fetchLeaderboard, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [id]);
+
+  // Timer countdown
+  useEffect(() => {
+    if (!session?.started_at || !session?.duration) {
+      // If no start time, show full duration
+      if (session?.duration) {
+        setTimeLeft(session.duration * 60);
+      }
+      return;
+    }
+
+    const calculateTimeLeft = () => {
+      const startTime = new Date(session.started_at!).getTime();
+      const durationMs = session.duration * 60 * 1000;
+      const endTime = startTime + durationMs;
+      const now = Date.now();
+      const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+      setTimeLeft(remaining);
+    };
+
+    calculateTimeLeft();
+    const interval = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(interval);
+  }, [session]);
+
+  const formatTime = (seconds: number): string => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedProblem || !id) return;
+
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      // For now, we'll simulate execution results
+      // In a real implementation, you'd run the code and get actual results
+      const mockResults = {
+        problem_id: selectedProblem.problem_id,
+        problem_slug: selectedProblem.problem_slug,
+        code: code,
+        language: language,
+        status: "Accepted",
+        runtime: Math.floor(Math.random() * 100) + 10,
+        memory: Math.floor(Math.random() * 1000) + 100,
+        passed_tests: 10,
+        total_tests: 10,
+      };
+
+      await pvpService.submitSolution(parseInt(id), mockResults);
+      setSuccess("✅ Solution submitted successfully!");
+
+      // Refresh leaderboard
+      const leaderboardData = await pvpService.getLeaderboard(parseInt(id));
+      setLeaderboard(leaderboardData);
+    } catch (err: any) {
+      setError(err.message || "Failed to submit solution");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty.toLowerCase()) {
+      case "easy":
+        return "#10b981";
+      case "medium":
+        return "#f59e0b";
+      case "hard":
+        return "#ef4444";
+      default:
+        return "#6b7280";
+    }
+  };
+
+  if (!session) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: "linear-gradient(to bottom, #000000, #0a0a0a)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "white",
+        }}
+      >
+        <div style={{ fontSize: "20px" }}>Loading session...</div>
+      </div>
+    );
+  }
+
+  // Check if session has ended
+  const sessionEnded = timeLeft !== null && timeLeft === 0;
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(to bottom, #000000, #0a0a0a)",
+        color: "white",
+      }}
+    >
+      {/* Session Ended Overlay */}
+      {sessionEnded && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.9)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "#1a1a1a",
+              padding: "40px",
+              borderRadius: "16px",
+              textAlign: "center",
+              maxWidth: "500px",
+            }}
+          >
+            <div style={{ fontSize: "48px", marginBottom: "16px" }}>⏰</div>
+            <h2
+              style={{
+                fontSize: "28px",
+                fontWeight: "bold",
+                marginBottom: "16px",
+              }}
+            >
+              Time's Up!
+            </h2>
+            <p
+              style={{ fontSize: "16px", color: "#888", marginBottom: "24px" }}
+            >
+              The session has ended. Check the final leaderboard below.
+            </p>
+            <button
+              onClick={() => navigate("/pvp")}
+              style={{
+                padding: "12px 24px",
+                background: "linear-gradient(to right, #3b82f6, #1e40af)",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              Back to PvP Lobby
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Header */}
+      <div
+        style={{
+          background: "#0a0a0a",
+          borderBottom: "1px solid #333",
+          padding: "16px 24px",
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1400px",
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <h1 style={{ fontSize: "24px", fontWeight: "bold", margin: 0 }}>
+              {session.title}
+            </h1>
+            <div style={{ fontSize: "14px", color: "#888", marginTop: "4px" }}>
+              Code: {session.code} • {session.difficulty}
+            </div>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "24px",
+            }}
+          >
+            {timeLeft !== null && (
+              <div
+                style={{
+                  fontSize: "28px",
+                  fontWeight: "bold",
+                  fontFamily: "monospace",
+                  color: timeLeft < 300 ? "#ef4444" : "#10b981",
+                }}
+              >
+                ⏱️ {formatTime(timeLeft)}
+              </div>
+            )}
+            <button
+              onClick={() => navigate("/pvp")}
+              style={{
+                padding: "8px 16px",
+                background: "#333",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "14px",
+              }}
+            >
+              Exit
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "24px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 350px",
+            gap: "24px",
+          }}
+        >
+          {/* Left Side - Problems and Editor */}
+          <div>
+            {/* Problem Tabs */}
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                marginBottom: "16px",
+                overflowX: "auto",
+              }}
+            >
+              {problems.map((problem) => (
+                <button
+                  key={problem.id}
+                  onClick={() => setSelectedProblem(problem)}
+                  style={{
+                    padding: "12px 20px",
+                    background:
+                      selectedProblem?.id === problem.id
+                        ? "#1e40af"
+                        : "#1a1a1a",
+                    border:
+                      selectedProblem?.id === problem.id
+                        ? "2px solid #3b82f6"
+                        : "1px solid #333",
+                    borderRadius: "8px",
+                    color: "white",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    transition: "all 0.2s",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {problem.letter}. {problem.problem_title}
+                </button>
+              ))}
+            </div>
+
+            {/* Problem Details */}
+            {selectedProblem && (
+              <div
+                style={{
+                  background: "#1a1a1a",
+                  borderRadius: "12px",
+                  padding: "24px",
+                  marginBottom: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "16px",
+                  }}
+                >
+                  <h2
+                    style={{ fontSize: "20px", fontWeight: "bold", margin: 0 }}
+                  >
+                    Problem {selectedProblem.letter}:{" "}
+                    {selectedProblem.problem_title}
+                  </h2>
+                  <div
+                    style={{
+                      padding: "6px 12px",
+                      background: getDifficultyColor(
+                        selectedProblem.problem_difficulty,
+                      ),
+                      borderRadius: "6px",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {selectedProblem.problem_difficulty}
+                  </div>
+                </div>
+                <div style={{ color: "#ccc", fontSize: "14px" }}>
+                  Points: {selectedProblem.points} • Slug:{" "}
+                  {selectedProblem.problem_slug}
+                </div>
+              </div>
+            )}
+
+            {/* Code Editor */}
+            <div
+              style={{
+                background: "#1a1a1a",
+                borderRadius: "12px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  padding: "12px 16px",
+                  background: "#0a0a0a",
+                  borderBottom: "1px solid #333",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <select
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  style={{
+                    padding: "8px 12px",
+                    background: "#1a1a1a",
+                    color: "white",
+                    border: "1px solid #333",
+                    borderRadius: "6px",
+                    fontSize: "14px",
+                  }}
+                >
+                  <option value="cpp">C++</option>
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="java">Java</option>
+                </select>
+              </div>
+              <div style={{ height: "500px" }}>
+                <Editor
+                  height="100%"
+                  language={language}
+                  value={code}
+                  onChange={(value) => setCode(value || "")}
+                  theme="vs-dark"
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    lineNumbers: "on",
+                    scrollBeyondLastLine: false,
+                    automaticLayout: true,
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Submit Section */}
+            <div style={{ marginTop: "16px" }}>
+              {error && (
+                <div
+                  style={{
+                    padding: "12px",
+                    background: "#7f1d1d",
+                    borderRadius: "8px",
+                    marginBottom: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div
+                  style={{
+                    padding: "12px",
+                    background: "#065f46",
+                    borderRadius: "8px",
+                    marginBottom: "12px",
+                    fontSize: "14px",
+                  }}
+                >
+                  {success}
+                </div>
+              )}
+              <button
+                onClick={handleSubmit}
+                disabled={loading || !selectedProblem || sessionEnded}
+                style={{
+                  width: "100%",
+                  padding: "16px",
+                  background:
+                    loading || !selectedProblem || sessionEnded
+                      ? "#333"
+                      : "linear-gradient(to right, #10b981, #059669)",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "16px",
+                  fontWeight: "bold",
+                  cursor:
+                    loading || !selectedProblem || sessionEnded
+                      ? "not-allowed"
+                      : "pointer",
+                  opacity:
+                    loading || !selectedProblem || sessionEnded ? 0.5 : 1,
+                }}
+              >
+                {sessionEnded
+                  ? "⏰ Session Ended"
+                  : loading
+                    ? "Submitting..."
+                    : "🚀 Submit Solution"}
+              </button>
+            </div>
+          </div>
+
+          {/* Right Side - Leaderboard */}
+          <div>
+            <div
+              style={{
+                background: "#1a1a1a",
+                borderRadius: "12px",
+                padding: "20px",
+                position: "sticky",
+                top: "100px",
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  marginBottom: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                🏆 Leaderboard
+              </h3>
+              <div
+                style={{ maxHeight: "calc(100vh - 200px)", overflowY: "auto" }}
+              >
+                {leaderboard.length === 0 ? (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      color: "#666",
+                      padding: "40px 0",
+                      fontSize: "14px",
+                    }}
+                  >
+                    No submissions yet. Be the first! 🚀
+                  </div>
+                ) : (
+                  leaderboard.map((entry, index) => (
+                    <div
+                      key={entry.user_id}
+                      style={{
+                        background:
+                          entry.user_id === user?.id ? "#1e3a5f" : "#0a0a0a",
+                        border:
+                          entry.user_id === user?.id
+                            ? "2px solid #3b82f6"
+                            : "1px solid #333",
+                        borderRadius: "8px",
+                        padding: "12px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              color:
+                                index === 0
+                                  ? "#fbbf24"
+                                  : index === 1
+                                    ? "#d1d5db"
+                                    : index === 2
+                                      ? "#cd7f32"
+                                      : "#888",
+                            }}
+                          >
+                            #{entry.rank}
+                          </span>
+                          <span
+                            style={{ fontWeight: "bold", fontSize: "14px" }}
+                          >
+                            {entry.username}
+                            {entry.user_id === user?.id && " (You)"}
+                          </span>
+                        </div>
+                        <div style={{ fontSize: "12px", color: "#888" }}>
+                          {entry.total_penalty} min
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "4px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {problems.map((problem) => {
+                          const problemStatus = entry.problems[problem.letter];
+                          return (
+                            <div
+                              key={problem.letter}
+                              style={{
+                                width: "28px",
+                                height: "28px",
+                                borderRadius: "4px",
+                                background: problemStatus?.accepted
+                                  ? "#10b981"
+                                  : problemStatus?.attempts > 0
+                                    ? "#ef4444"
+                                    : "#333",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                fontSize: "11px",
+                                fontWeight: "bold",
+                              }}
+                              title={
+                                problemStatus?.accepted
+                                  ? `Solved in ${problemStatus.time_penalty} min`
+                                  : problemStatus?.attempts > 0
+                                    ? `${problemStatus.attempts} attempts`
+                                    : "Not attempted"
+                              }
+                            >
+                              {problem.letter}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "8px",
+                          fontSize: "12px",
+                          color: "#10b981",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        ✓ {entry.problems_solved} solved
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PvPSession;
